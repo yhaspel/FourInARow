@@ -106,7 +106,7 @@ var checkColumn = function () {
     return isColumn;
 };
 
-var checkDiagonal = function () {
+var checkDiagonal1 = function () {
     var isDiag = false;
     for (var i = 0; i < rows - 3; i++) {
         for (var j = 0; j < columns - 3; j++) {
@@ -123,8 +123,25 @@ var checkDiagonal = function () {
     return isDiag;
 };
 
+var checkDiagonal2 = function () {
+    var isDiag = false;
+    for (var i = 0; i < rows - 3; i++) {
+        for (var j = 4; j < columns; j++) {
+            if (valArr[i][j] !== 0) {
+                if (valArr[i][j] === valArr[i + 1][j - 1]
+                    && valArr[i + 1][j - 1] === valArr[i + 2][j - 2]
+                    && valArr[i + 2][j - 2] === valArr[i + 3][j - 3]) {
+                    isDiag = true;
+                    console.log('Diag: ', valArr[i][j], valArr[i + 1][j - 1], valArr[i + 2][j - 2], valArr[i + 3][j - 3]);
+                }
+            }
+        }
+    }
+    return isDiag;
+};
+
 var checkBoard = function (coords) {
-    return checkRow() || checkColumn() || checkDiagonal();
+    return checkRow() || checkColumn() || checkDiagonal1() || checkDiagonal2();
 };
 
 var announceWin = function () {
@@ -134,14 +151,12 @@ var announceWin = function () {
 };
 
 var clickCell = function () {
-    // console.log('current player: ', currPlayerIndex, ' ', players[currPlayerIndex].name);
     var cellId = getBottomCellId(this);
     var cell = document.getElementById(cellId);
     var coords = cellId.split(',');
     if (coords[0] >= 0) {
         $(cell).css('backgroundColor', players[currPlayerIndex].color);
         valArr[coords[0]][coords[1]] = currPlayerIndex + 1;
-        // console.log('"' + cellId + '"', valArr[coords[0]][coords[1]]);
         if (checkBoard(coords)) {
             announceWin();
         }
