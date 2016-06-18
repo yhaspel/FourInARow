@@ -1,0 +1,46 @@
+h1, h4{
+    text-align: center;
+    color: #204d74;
+}
+
+.announcement {
+    background-color: #2aabd2;
+    width: 100%;
+    height: 30px;
+    color: #0f0f0f;
+    text-align: center;
+}
+
+.container {
+    width: 100%;
+    padding-left: 20%;
+    padding-right: 20%;
+    display: flex;
+    justify-content: space-between;
+    border: double;
+}
+
+.board {
+    margin: 10%;
+    width: 80%;
+    height: 80%;
+}
+
+.cell {
+    width: 100px;
+    height: 70px;
+    background-color: #9d9d9d;
+    background-size: cover;
+    margin: 20px;
+    border-radius: 25px;
+    text-align: center;
+}
+
+.cell:hover {
+    background-color: #8c8c8c;
+}
+
+.btn-group {
+    display: flex;
+    justify-content: center;
+}
