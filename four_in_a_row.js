@@ -33,7 +33,7 @@ var drawTable = function drawTable(n, m) {
         var row = $("<tr></tr>");
         $(t).append(row);
         for (var j = 0; j < m; j++) {
-            var cell = $("<td class='cell'>$</td>");
+            var cell = $("<td class='cell'></td>");
             $(cell).attr('id', i + ',' + j);
             $(cell).data('val', valArr[i][j]);
             // console.log($(cell).attr('id'), ' : ', valArr[i][j]);
@@ -65,11 +65,15 @@ var findBottomFreeCell = function (row) {
 
 var getBottomCellId = function (cell) {
     var ID = $(cell).attr('id');
-    var coords = ID.split(',');
-    coords[1] = parseInt(coords[1]);
-    coords[0] = findBottomFreeCell(coords[1]);
-    var idStr = coords[0] + ',' + coords[1];
-    return idStr;
+    try {
+        var coords = ID.split(',');
+        coords[1] = parseInt(coords[1]);
+        coords[0] = findBottomFreeCell(coords[1]);
+        return coords;
+    }
+    catch (err) {
+
+    }
 };
 
 var checkRow = function () {
@@ -126,7 +130,7 @@ var checkDiagonal1 = function () {
 var checkDiagonal2 = function () {
     var isDiag = false;
     for (var i = 0; i < rows - 3; i++) {
-        for (var j = 4; j < columns; j++) {
+        for (var j = 3; j < columns; j++) {
             if (valArr[i][j] !== 0) {
                 if (valArr[i][j] === valArr[i + 1][j - 1]
                     && valArr[i + 1][j - 1] === valArr[i + 2][j - 2]
@@ -146,18 +150,34 @@ var checkBoard = function (coords) {
 
 var announceWin = function () {
     $('.cell').prop('disabled', true);
+    $('#btn-reset').css('visibility', 'visible');
+    $('#btn-reset').slideDown(500);
     $('.announcement').html(players[currPlayerIndex].name + ' Wins!');
-
 };
+
+var getIdTrace = function (cell) {
+    var cellId = getBottomCellId(cell);
+    var idTrace = [];
+    for (var i = 0; i < cellId[0]; i++) {
+        try {
+            idTrace.push([i, cellId[1]]);
+        }
+        catch (err) {
+        }
+    }
+    return idTrace;
+};
+
+
 
 var clickCell = function () {
     var cellId = getBottomCellId(this);
     var cell = document.getElementById(cellId);
-    var coords = cellId.split(',');
-    if (coords[0] >= 0) {
+    if (cellId[0] >= 0) {
+        valArr[cellId[0]][cellId[1]] = currPlayerIndex + 1;
+        // TODO: trace with animation
         $(cell).css('backgroundColor', players[currPlayerIndex].color);
-        valArr[coords[0]][coords[1]] = currPlayerIndex + 1;
-        if (checkBoard(coords)) {
+        if (checkBoard(cellId)) {
             announceWin();
         }
         else {
@@ -167,13 +187,22 @@ var clickCell = function () {
 };
 
 var resetPage = function () {
-    location.reload();
+    var reloadPage = function () {
+        location.reload();
+    };
+
+    $('#btn-reset').slideUp(500, reloadPage);
+};
+
+var loadPage = function () {
+    $('#btn-reset').slideUp(500);
 };
 
 var init = function () {
     $(".player").html(players[currPlayerIndex].name);
     drawTable(rows, columns);
 
+    $(document).ready(loadPage);
     $('.board').on('click', 'td', clickCell);
     $('#btn-reset').on('click', resetPage);
 };
